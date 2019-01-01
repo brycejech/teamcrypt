@@ -1,0 +1,22 @@
+{
+  "name": "teamcrypt",
+  "version": "0.0.1",
+  "description": "Team Password Sharing",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brycejech/teamcrypt.git"
+  },
+  "author": "Bryce Jech",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brycejech/teamcrypt/issues"
+  },
+  "homepage": "https://github.com/brycejech/teamcrypt#readme",
+  "devDependencies": {
+    "jest": "^23.6.0"
+  }
+}
