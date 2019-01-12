@@ -28,6 +28,12 @@ describe('Crypto module should encrypt text', async () => {
         expect(decrypt(key, encrypted)).toEqual(text);
     });
 
+    test('Should throw on invalid key length', async () => {
+        const key = '0123456789abcdefg';
+
+        expect(() => encrypt(key, text)).toThrow();
+    });
+
     test('Should not decrypt text when password bad', async () => {
         const { key }  = await deriveKey(password, salt);
 
