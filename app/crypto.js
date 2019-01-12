@@ -7,6 +7,8 @@ const crypto = require('crypto'),
 const { IV_LENGTH, ALGORITHM } = conf.crypto;
 
 function encrypt(key, text){
+    if(key.length !== 32) throw new Error('Invalid encryption key length, expected 32 characters');
+
     const iv      = crypto.randomBytes(IV_LENGTH),
           cipher  = crypto.createCipheriv(ALGORITHM, Buffer.from(key), iv);
 
