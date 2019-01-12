@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('crypto'),
+      bcrypt = require('bcrypt'),
       conf   = require('../conf');
 
 const { IV_LENGTH, ALGORITHM } = conf.crypto;
@@ -55,6 +56,18 @@ async function deriveKey(password, salt){
     });
 }
 
+function hashPassword(password){
+    const rounds = conf.bcrypt.ROUNDS;
+
+    return new Promise((resolve, reject) => {
+        bcrypt.hash(password, rounds, (err, hash) => {
+            if(err) return reject(err);
+
+            return resolve(hash);
+        });
+    });
+}
+
 
 /*
     ===============
@@ -82,4 +95,4 @@ function _hexBuffer(text){ return Buffer.from(text, 'hex') }
     EXPORTS
     =======
 */
-module.exports = { encrypt, decrypt, deriveKey };
+module.exports = { encrypt, decrypt, deriveKey, hashPassword };
