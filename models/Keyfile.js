@@ -67,10 +67,15 @@ Keyfile.prototype.decrypt = function keyfileDecrypt(key){
     const decrypted = crypto.decrypt(key, this.keyfile);
 
     if(decrypted){
-        this.keyfile   = decrypted;
-        this.encrypted = false;
+        try{
+            const keyfile = JSON.parse(decrypted);
 
-        return this;
+            this.keyfile   = keyfile;
+            this.encrypted = false;
+
+            return this;
+        }
+        catch(e){ throw e }
     }
     else{
         throw new Error('Incorrect encryption key');
@@ -79,7 +84,7 @@ Keyfile.prototype.decrypt = function keyfileDecrypt(key){
 
 Keyfile.prototype.encrypt = function keyfileEncrypt(key){
     try{
-        this.keyfile   = crypto.encrypt(key, this.keyfile);
+        this.keyfile   = crypto.encrypt(key, JSON.stringify(this.keyfile));
         this.encrypted = true;
 
         return this;
