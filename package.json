@@ -11,7 +11,8 @@
     "url": "git+https://github.com/brycejech/teamcrypt.git"
   },
   "author": "Bryce Jech",
-  "license": "ISC",
+  "license": "UNLICENSED",
+  "private": true,
   "bugs": {
     "url": "https://github.com/brycejech/teamcrypt/issues"
   },
