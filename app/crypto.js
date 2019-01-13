@@ -70,6 +70,15 @@ function hashPassword(password){
     });
 }
 
+function verifyPassword(password, hash){
+    return new Promise((resolve, reject) => {
+        bcrypt.compare(password, hash, (err, result) => {
+            if(err) return reject(err);
+            resolve(result);
+        });
+    });
+}
+
 
 /*
     ===============
@@ -97,4 +106,4 @@ function _hexBuffer(text){ return Buffer.from(text, 'hex') }
     EXPORTS
     =======
 */
-module.exports = { encrypt, decrypt, deriveKey, hashPassword };
+module.exports = { encrypt, decrypt, deriveKey, hashPassword, verifyPassword };
