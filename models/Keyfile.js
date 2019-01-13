@@ -57,6 +57,35 @@ Keyfile.prototype.remove = function keyfileRemove(title){
     return this;
 }
 
+Keyfile.prototype.toTree = function keyfileToTree(){
+    // Find entries without parents first
+    const rootEntries  = [],
+          childEntries = [];
+
+    this.keyfile.forEach(entry => {
+        // ensure folders have children array
+        if(entry.type === 'folder') entry.children = [];
+
+        // if it has a parent it must be a child
+        if(entry.parent) return childEntries.push(entry);
+
+        // otherwise, it is a root entry
+        rootEntries.push(entry);
+    });
+
+    const tree = [...rootEntries];
+
+    for(const entry of childEntries){
+
+        const parent = _findInTree(tree, entry.parent);
+
+        if(!parent) console.log('Parent not found for', entry.title);
+        parent.children.push(entry);
+    }
+
+    return tree;
+}
+
 Keyfile.prototype.findEntry = function keyfileFindEntry(title){
     return this.keyfile.filter(entry => entry.title === title)[0];
 }
@@ -96,5 +125,19 @@ Keyfile.prototype.encrypt = function keyfileEncrypt(key){
     catch(e){ throw e }
 }
 
+
+function _findInTree(tree, title){
+    let found;
+
+    for(const entry of tree){
+        if(entry.title === title) return entry;
+
+        if(entry.type === 'folder') found = _findInTree(entry.children, title);
+
+        if(found) break;
+    }
+
+    return found
+}
 
 module.exports = Keyfile;
