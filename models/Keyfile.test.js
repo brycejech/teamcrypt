@@ -112,10 +112,11 @@ describe('Keyfile should handle encryption', () => {
         expect(found.title).toBe(entry.title);
     });
 
-    test('It should not allow adding items while encrypted', () => {
+    test('It should not allow changes while encrypted', () => {
         kf.encrypt(key);
 
         expect(() => kf.add({ title: 'myTitle' })).toThrow();
+        expect(() => kf.remove({ title: 'myTitle' })).toThrow();
     });
 
     test('It should throw on bad encryption key', async () => {
@@ -124,6 +125,20 @@ describe('Keyfile should handle encryption', () => {
         ({ key } = await crypto.deriveKey('aDifferentPassword'));
 
         expect(() => kf.decrypt(key)).toThrow();
+    });
+
+    test('It should not encrypt while encrypted', () => {
+        kf.encrypt(key);
+
+        const keyfile = kf.keyfile;
+
+        expect(kf.encrypt(key).keyfile).toBe(keyfile);
+    });
+
+    test('It should not decrypt while decrypted', () => {
+        const keyfile = kf.keyfile;
+
+        expect(kf.decrypt(key).keyfile).toBe(keyfile);
     });
 
 });
