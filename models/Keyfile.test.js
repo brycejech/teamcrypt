@@ -142,3 +142,21 @@ describe('Keyfile should handle encryption', () => {
     });
 
 });
+
+describe('Keyfile should build a nested tree', () => {
+    test('It should return an array', () => {
+        const kf = new Keyfile();
+
+        kf
+          .add({type: 'folder', title: 'outerFolder'})
+          .add({title: 'firstChild', parent: 'outerFolder'})
+          .add({type: 'folder', title: 'innerFolder', parent: 'outerFolder'})
+          .add({title: 'innerChild', parent: 'innerFolder'})
+          .add({title: 'innerChild2', parent: 'innerFolder'})
+          .add({title: 'outerEntry'})
+          .add({title: 'orphanEntry', parent: 'orphanParent'});
+
+        expect(typeof kf.toTree()).toBe('object');
+        expect(Array.isArray(kf.toTree())).toBe(true);
+    });
+});
