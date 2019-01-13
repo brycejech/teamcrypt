@@ -44,6 +44,7 @@ Keyfile.prototype.add = function keyfileAdd(obj){
 }
 
 Keyfile.prototype.remove = function keyfileRemove(title){
+    if(this.encrypted) throw new Error('Must decrypt before removing items');
 
     const entry = this.findEntry(title);
 
@@ -83,6 +84,9 @@ Keyfile.prototype.decrypt = function keyfileDecrypt(key){
 }
 
 Keyfile.prototype.encrypt = function keyfileEncrypt(key){
+
+    if(this.encrypted) return this;
+
     try{
         this.keyfile   = crypto.encrypt(key, JSON.stringify(this.keyfile));
         this.encrypted = true;
