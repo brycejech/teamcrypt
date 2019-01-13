@@ -1,16 +1,17 @@
 
 SELECT
-    account.id,
-    account.name,
-    account.email,
-    account.username,
-    account.password,
-    account.uuid,
-    account.registered,
-    
-    keyfile.keyfile,
-    keyfile.id          AS "keyfileID",
-    keyfile.modified    AS "keyfileLastModified"
+      account.id
+    , account.name
+    , account.email
+    , account.username
+    , account.password
+    , account.uuid
+    , account.registered
+    , account.salt
+
+    , keyfile.keyfile
+    , keyfile.id          AS "keyfileID"
+    , keyfile.modified    AS "keyfileLastModified"
 
 FROM account
 
