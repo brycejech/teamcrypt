@@ -5,7 +5,7 @@
     PUBLIC METHODS
     ==============
 */
-async function encrypt(key, text){
+export async function encrypt(key, text){
 
     const iv = genIV();
 
@@ -19,7 +19,7 @@ async function encrypt(key, text){
     catch (e) { throw e }
 }
 
-async function decrypt(key, cipherText){
+export async function decrypt(key, cipherText){
 
     let [ iv, text ] = cipherText.split(':');
 
@@ -34,7 +34,7 @@ async function decrypt(key, cipherText){
     catch(e){ throw e }
 }
 
-async function deriveKey(pw, salt){
+export async function deriveKey(pw, salt){
     const params = {
         name: 'PBKDF2',
         hash: 'SHA-256',
@@ -46,24 +46,14 @@ async function deriveKey(pw, salt){
           usages = [ 'encrypt', 'decrypt' ];
 
     try{
-        const keyMaterial = await getKeyMaterial(pw);
+        const keyMaterial = await _getKeyMaterial(pw);
 
         return crypto.subtle.deriveKey(params, keyMaterial, algo, false, usages);
     }
     catch(e){ throw e }
 }
 
-function getKeyMaterial(pw) {
-    return crypto.subtle.importKey(
-        'raw',              // format
-        _encode(pw),        // keyData
-        { name: 'PBKDF2' }, // algo
-        false,              // extractable
-        [ 'deriveKey' ]     // usages
-    );
-}
-
-function genSalt(){
+export function genSalt(){
     return crypto.getRandomValues(new Uint8Array(32));
 }
 
@@ -82,6 +72,16 @@ function _encode(text){
 
 function _decode(ab){
     return (new TextDecoder()).decode(ab);
+}
+
+function _getKeyMaterial(pw) {
+    return crypto.subtle.importKey(
+        'raw',              // format
+        _encode(pw),        // keyData
+        { name: 'PBKDF2' }, // algo
+        false,              // extractable
+        [ 'deriveKey' ]     // usages
+    );
 }
 
 function _arrayBufferToHexString(ab){
@@ -110,13 +110,3 @@ function _intToHex(n){
 function _hexToInt(hex){
     return parseInt(hex, 16);
 }
-
-const api = {
-    encrypt,
-    decrypt,
-    genSalt,
-    genIV: genSalt,
-    deriveKey,
-};
-
-export default api;
