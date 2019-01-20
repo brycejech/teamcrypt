@@ -3,19 +3,15 @@
 const fs   = require('fs'),
       path = require('path');
 
-const models = require('../../models');
-
 const queries = [
     {
         name:     'user-create',
         file:     './user-create.sql',
-        model:    'User',
         firstRow:  true
     },
     {
         name:     'user-get',
         file:     './user-get.sql',
-        model:    'User',
         firstRow: true
     },
     {

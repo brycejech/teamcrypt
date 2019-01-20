@@ -5,8 +5,7 @@ const pgConf = require('../conf').pg;
 const { Pool } = require('pg'),
         pool   = new Pool(pgConf);
 
-const queries = require('./queries'),
-      models  = require('../models');
+const queries = require('./queries');
 
 function _getClient(){ return pool.connect() }
 
