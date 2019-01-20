@@ -5,20 +5,28 @@
     PUBLIC METHODS
     ==============
 */
-async function encrypt(key, iv, text){
+async function encrypt(key, text){
+
+    const iv = genIV();
+
     const algo = { name: 'AES-GCM', iv };
 
     try {
         const ab = await crypto.subtle.encrypt(algo, key, _encode(text));
 
-        return _arrayBufferToHexString(ab);
+        return [iv.buffer, ab].map(_arrayBufferToHexString).join(':');
     }
     catch (e) { throw e }
 }
 
-async function decrypt(key, iv, cipherText){
+async function decrypt(key, cipherText){
+
+    let [ iv, text ] = cipherText.split(':');
+
+    iv = _hexStringToIntArray(iv);
+
     const algo = { name: 'AES-GCM', iv },
-          ab   = _hexStringToIntArray(cipherText)
+          ab   = _hexStringToIntArray(text);
 
     try{
         return _decode(await crypto.subtle.decrypt(algo, key, ab));
@@ -56,7 +64,7 @@ function getKeyMaterial(pw) {
 }
 
 function genSalt(){
-    return crypto.getRandomValues(new Uint8Array(16));
+    return crypto.getRandomValues(new Uint8Array(32));
 }
 
 function genIV(){
