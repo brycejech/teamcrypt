@@ -14,7 +14,7 @@ const webpackConfig = {
 }
 
 const jsConfig = Object.assign({}, webpackConfig, {
-    entry: [ './client/src/js/index.js' ]
+    entry: './client/src/js/main.js'
 });
 
 const sassConfig = Object.assign({}, webpackConfig, {
