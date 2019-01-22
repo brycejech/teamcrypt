@@ -7,12 +7,181 @@
         <link rel="stylesheet" href="https://getnucleon.com/release/latest/nucleon.min.css">
         <link rel="stylesheet" href="./dist/main.bundle.css">
 
-        <script src="./dist/bundle.min.js"></script>
+        <script src="./dist/main.min.js"></script>
     </head>
     <body>
         <div class="container">
             <div class="row">
-                
+                <div class="col-6">
+                    <div class="add-entry">
+                        <form id="add-entry-form">
+                            <h3 class="text-center">Add Entry</h3>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="title">Title</label>
+                                    <input id="title" class="title" type="text">
+                                </div>
+                                <div class="col-6">
+                                    <label for="type">Type</label>
+                                    <select id="type" class="type">
+                                        <option value="">Select</option>
+                                        <option value="entry">Entry</option>
+                                        <option value="folder">Folder</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label for="parent">Parent</label>
+                                    <input id="parent" class="parent" type="text">
+                                </div>
+                                <div class="col-12">
+                                    <label for="username">Username</label>
+                                    <input id="username" class="username" type="text">
+                                </div>
+                                <div class="col-6">
+                                    <label for="password">Password</label>
+                                    <input id="password" class="password" type="password">
+                                </div>
+                                <div class="col-6">
+                                    <label for="confirm-password">Confirm Password</label>
+                                    <input id="confirm-password" class="confirm-password" type="password">
+                                </div>
+                                <div class="col-12">
+                                    <label for="url">URL</label>
+                                    <input id="url" class="url" type="text">
+                                </div>
+                                <div class="col-12">
+                                    <label for="notes">Notes</label>
+                                    <textarea id="notes" class="notes" rows="6"></textarea>
+                                </div>
+                                <div class="col-6 col-offset-3">
+                                    <button class="submit btn btn-block btn-primary">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                        <script>
+                            'use strict';
+
+                            (function() {
+
+                                const form = document.getElementById('add-entry-form');
+
+                                const ctrl_title       = form.querySelector('.title'),
+                                      ctrl_type        = form.querySelector('.type'),
+                                      ctrl_parent      = form.querySelector('.parent'),
+                                      ctrl_username    = form.querySelector('.username'),
+                                      ctrl_password    = form.querySelector('.password'),
+                                      ctrl_passConfirm = form.querySelector('.confirm-password'),
+                                      ctrl_url         = form.querySelector('.url'),
+                                      ctrl_notes       = form.querySelector('.notes');
+
+                                const btn_submit = form.querySelector('.submit');
+
+
+
+                                btn_submit.addEventListener('click', _submitHandler);
+                                form.addEventListener('submit', _submitHandler);
+
+                                function _submitHandler(e){
+                                    e.preventDefault();
+
+                                    kf.add(_getFormValues());
+                                    _updateOutput();
+                                }
+
+                                function _getFormValues(){
+                                    return {
+                                        title:       ctrl_title.value,
+                                        type:        ctrl_type.value,
+                                        parent:      ctrl_parent.value,
+                                        username:    ctrl_username.value,
+                                        password:    ctrl_password.value,
+                                        passConfirm: ctrl_passConfirm.value,
+                                        url:         ctrl_url.value,
+                                        notes:       ctrl_notes.value
+                                    }
+                                }
+                            }());
+                        </script>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h3 class="text-center">Keyfile Methods</h3>
+                    <div class="row">
+                        <div class="col-6 mb-0 pb-0">
+                            <label for="passphrase">Passphrase</label>
+                            <input id="passphrase" class="passphrase mb-0" type="text">
+                        </div>
+                        <div class="col-6 mb-0 pb-0">
+                            <label for="salt">Salt</label>
+                            <input id="salt" class="salt mb-0" type="text">
+                        </div>
+                        <div class="col-12 mt-0 pt-0">
+                            <button class="set-key btn btn-block btn-primary">setKey</button>
+                        </div>
+                        <div class="col-6 mb-0 pb-0">
+                            <button class="encrypt btn btn-block btn-danger">Encrypt</button>
+                        </div>
+                        <div class="col-6 mb-0 pb-0">
+                            <button class="decrypt btn btn-block btn-success">Decrypt</button>
+                        </div>
+                        <div class="col-12 mt-0 pt-0">
+                            <button class="to-tree btn btn-block btn-warn">toTree</button>
+                        </div>
+                    </div>
+                    <h3 class="text-center">Output</h3>
+                    <pre><code id="output"></code></pre>
+                </div>
+
+                <script>
+                    'use strict';
+
+                    function _updateOutput(){
+                        const el = document.getElementById('output');
+
+                        el.innerText = kf.encrypted ? kf.keyfile : JSON.stringify(kf.keyfile, null, 4);
+                    }
+
+                    _updateOutput();
+
+                    (function() {
+                        const salt = crypt.genSalt();
+
+                        const ctrl_salt   = document.querySelector('.salt'),
+                              ctrl_pass   = document.querySelector('.passphrase'),
+                              btn_setKey  = document.querySelector('.btn.set-key'),
+                              btn_encrypt = document.querySelector('.btn.encrypt'),
+                              btn_decrypt = document.querySelector('.btn.decrypt'),
+                              btn_tree    = document.querySelector('.btn.to-tree');
+
+
+                        btn_setKey.addEventListener('click', function (e){
+                            const passphrase = ctrl_pass.value;
+
+                            kf.setKey(passphrase, salt);
+                        });
+
+                        btn_encrypt.addEventListener('click', function(e){
+                            kf.encrypt().then(() => _updateOutput()).catch(console.error)
+                        });
+
+                        btn_decrypt.addEventListener('click', function(e){
+                            kf.decrypt().then(() => _updateOutput()).catch(e => console.error('Bad password'));
+                        });
+
+                        btn_tree.addEventListener('click', function(e){
+                            try{
+                                document.getElementById('output').innerText = JSON.stringify(kf.toTree(), null, 4);
+                            }
+                            catch(e){
+                                console.error(e);
+                            }
+                        });
+
+                        ctrl_salt.value = crypt.ab2hex(salt);
+                    }());
+
+                </script>
             </div>
         </div>
     </body>
