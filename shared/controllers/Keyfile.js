@@ -57,12 +57,16 @@ Keyfile.prototype.remove = function keyfileRemove(title){
 
 Keyfile.prototype.toTree = function keyfileToTree(){
     if(this.encrypted) throw new Error('Must decrypt before building tree');
-    
+
     // Find entries without parents first
     const rootEntries  = [],
           childEntries = [];
 
     this.keyfile.forEach(entry => {
+
+        // Shallow clone
+        entry = { ...entry };
+
         // ensure folders have children array
         if(entry.type === 'folder') entry.children = [];
 
