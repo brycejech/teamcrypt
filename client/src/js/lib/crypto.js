@@ -95,6 +95,8 @@ function _arrayBufferToHexString(ab){
     return arr.map(_intToHex).join('');
 }
 
+export { _arrayBufferToHexString as ab2hex }
+
 function _hexStringToIntArray(hex){
     const arr = hex.match(/.{2}/g)  // A1B2C3 -> ['A1', 'B2', 'C3']
                    .map(_hexToInt); // parse to ints
