@@ -56,6 +56,8 @@ Keyfile.prototype.remove = function keyfileRemove(title){
 }
 
 Keyfile.prototype.toTree = function keyfileToTree(){
+    if(this.encrypted) throw new Error('Must decrypt before building tree');
+    
     // Find entries without parents first
     const rootEntries  = [],
           childEntries = [];
