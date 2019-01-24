@@ -7,7 +7,8 @@ const express    = require('express'),
 const app = require('./app'),
       db  = require('./db');
 
-const { Keyfile } = require('./models');
+const { Keyfile } = require('./controllers'),
+      { User }    = require('./models');
 
 const server = express();
 
@@ -31,11 +32,26 @@ server.get('/', (req, res, next) => {
     return res.json({ message: 'Running' });
 });
 
+server.get('/user/:username', async (req, res, next) => {
+
+    const username = req.params.username;
+
+    try{
+        const user = await User.get({ username });
+
+        return res.json(user.getPublicObject());
+    }
+    catch(e){
+        console.log(e);
+        return res.json({ e: e.message });
+    }
+});
+
 server.post('/login', async (req, res, next) => {
     const username = req.body.username || req.body.email,
           password = req.body.password;
 
-    const user   = await db.q('user-get', [username]),
+    const user   = await User.get({ username }),
           authed = await app.crypto.verifyPassword(password, user.password);
 
     if(authed === true){
@@ -45,9 +61,7 @@ server.post('/login', async (req, res, next) => {
 
         user.keyfile = kf.decrypt(key);
 
-        const publicUser = app.makePublic.user(user);
-
-        res.json(publicUser);
+        res.json(user.getPublicObject());
     }
     else{
         res.json({ message: 'Incorrect username/password' });
