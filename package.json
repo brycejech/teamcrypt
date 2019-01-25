@@ -32,6 +32,8 @@
     "bcrypt": "^3.0.3",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "memorystore": "^1.6.0",
     "mini-css-extract-plugin": "^0.5.0",
     "pg": "^7.8.0",
     "uuid": "^3.3.2"
