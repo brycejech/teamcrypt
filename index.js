@@ -1,11 +1,12 @@
 'use strict';
 
-const express    = require('express'),
-      bodyParser = require('body-parser'),
-      path       = require('path');
+const express     = require('express'),
+      bodyParser  = require('body-parser'),
+      session     = require('express-session'),
+      MemoryStore = require('memorystore')(session),
+      path        = require('path');
 
-const app = require('./app'),
-      db  = require('./db');
+const app = require('./app');
 
 const { Keyfile } = require('./controllers'),
       { User }    = require('./models');
@@ -14,6 +15,33 @@ const server = express();
 
 server.set('case sensitive routing', true);
 server.enable('trust proxy'); // If running behind Nginx proxy
+
+// Session setup
+server.use(session({
+    cookieName: 'teamcrypt_session',
+    store: new MemoryStore({
+        // Clear entries older than "checkPeriod"
+        // Prevents memory leakage over time
+        checkPeriod: 1000 * 60 * 60 * 24 // 86,400,000MS -> 1 day
+    }),
+    secret: app.crypto.genSaltSync(),
+    // Set to true to trust reverse proxy
+    // If not set, will accept server.enable('trust proxy'), set above
+    proxy: true,
+    saveUninitialized: true,
+    resave: true,
+    cookie: {
+        // disallow JS access to cookie in browser
+        // NEVER set this to false
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24, // 86,400,000MS -> 1 day
+        // Set this to true in production when running behind SSL
+        secure: false,
+        // default "/", change to limit session cookie to certain URL paths
+        path: '/',
+        sameSite: 'strict'
+    }
+}));
 
 server.use(express.static(path.join(__dirname, 'client')));
 
