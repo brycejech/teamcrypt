@@ -40,7 +40,7 @@ function decrypt(key, text){
 // the salt argument
 async function deriveKey(password, salt){
     try{
-        if(!salt) salt = await _genSalt();
+        if(!salt) salt = await genSalt();
     }
     catch(e){ throw e }
 
@@ -79,15 +79,8 @@ function verifyPassword(password, hash){
     });
 }
 
-
-/*
-    ===============
-    PRIVATE HELPERS
-    ===============
-*/
-
 // Generate cryptographically secure nonce
-function _genSalt(){
+function genSalt(){
     return new Promise((resolve, reject) => {
         crypto.randomBytes(32, (err, buff) => {
             if(err) return reject(err);
@@ -96,6 +89,21 @@ function _genSalt(){
         });
     });
 }
+
+function genSaltSync(){
+    try{
+        const buf = crypto.randomBytes(32);
+
+        return buf.toString('hex');
+    }
+    catch(e){ throw e }
+}
+
+/*
+    ===============
+    PRIVATE HELPERS
+    ===============
+*/
 
 // Return a Buffer from hex string
 function _hexBuffer(text){ return Buffer.from(text, 'hex') }
@@ -106,4 +114,4 @@ function _hexBuffer(text){ return Buffer.from(text, 'hex') }
     EXPORTS
     =======
 */
-module.exports = { encrypt, decrypt, deriveKey, hashPassword, verifyPassword };
+module.exports = { encrypt, decrypt, deriveKey, hashPassword, verifyPassword, genSalt, genSaltSync };
