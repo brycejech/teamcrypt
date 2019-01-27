@@ -7,182 +7,189 @@
         <link rel="stylesheet" href="https://getnucleon.com/release/latest/nucleon.min.css">
         <link rel="stylesheet" href="./dist/main.bundle.css">
 
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
         <script src="./dist/main.min.js"></script>
+
+        <style>
+            .full-width { max-width: none }
+        </style>
     </head>
     <body>
-        <div class="container">
+        <div id="vue-app" class="container full-width px-4">
             <div class="row">
-                <div class="col-6">
-                    <div class="add-entry">
-                        <form id="add-entry-form">
-                            <h3 class="text-center">Add Entry</h3>
+                <div class="col-4">
+                    <div class="add-entry vue">
+                        <form @submit.prevent="formSubmit">
+                            <h3 class="text-center">Vue Add Entry</h3>
 
                             <div class="row">
-                                <div class="col-6">
-                                    <label for="title">Title</label>
-                                    <input id="title" class="title" type="text">
-                                </div>
-                                <div class="col-6">
-                                    <label for="type">Type</label>
-                                    <select id="type" class="type">
-                                        <option value="">Select</option>
-                                        <option value="entry">Entry</option>
+                                <div class="col-12">
+                                    <label for="v-type">Type</label>
+                                    <select id="v-type" v-model="type">
+                                        <option value="entry" selected>Entry</option>
                                         <option value="folder">Folder</option>
                                     </select>
                                 </div>
                                 <div class="col-12">
-                                    <label for="parent">Parent</label>
-                                    <input id="parent" class="parent" type="text">
+                                    <label for="v-title">Title</label>
+                                    <input id="v-title" v-model="title" type="text">
                                 </div>
                                 <div class="col-12">
-                                    <label for="username">Username</label>
-                                    <input id="username" class="username" type="text">
+                                    <label for="v-parent">Parent</label>
+                                    <input id="v-parent" v-model="parent" type="text">
                                 </div>
-                                <div class="col-6">
-                                    <label for="password">Password</label>
-                                    <input id="password" class="password" type="password">
+                                <div v-if="type === 'entry'" class="col-12">
+                                    <label for="v-username">Username</label>
+                                    <input id="v-username" v-model="username" type="text">
                                 </div>
-                                <div class="col-6">
-                                    <label for="confirm-password">Confirm Password</label>
-                                    <input id="confirm-password" class="confirm-password" type="password">
+                                <div v-if="type === 'entry'" class="col-6">
+                                    <label for="v-password">Password</label>
+                                    <input id="v-password" v-model="password" type="password">
                                 </div>
-                                <div class="col-12">
-                                    <label for="url">URL</label>
-                                    <input id="url" class="url" type="text">
+                                <div v-if="type === 'entry'" class="col-6">
+                                    <label for="v-confirm-password">Confirm Password</label>
+                                    <input id="v-confirm-password" v-model="confirmPassword" type="password">
                                 </div>
-                                <div class="col-12">
-                                    <label for="notes">Notes</label>
-                                    <textarea id="notes" class="notes" rows="6"></textarea>
+                                <div v-if="type === 'entry'" class="col-12">
+                                    <label for="v-url">URL</label>
+                                    <input id="v-url" v-model="url" type="text">
+                                </div>
+                                <div v-if="type === 'entry'" class="col-12">
+                                    <label for="v-notes">Notes</label>
+                                    <textarea id="v-notes" v-model="notes" rows="6"></textarea>
                                 </div>
                                 <div class="col-6 col-offset-3">
                                     <button class="submit btn btn-block btn-primary">Submit</button>
                                 </div>
                             </div>
                         </form>
-                        <script>
-                            'use strict';
-
-                            (function() {
-
-                                const form = document.getElementById('add-entry-form');
-
-                                const ctrl_title       = form.querySelector('.title'),
-                                      ctrl_type        = form.querySelector('.type'),
-                                      ctrl_parent      = form.querySelector('.parent'),
-                                      ctrl_username    = form.querySelector('.username'),
-                                      ctrl_password    = form.querySelector('.password'),
-                                      ctrl_passConfirm = form.querySelector('.confirm-password'),
-                                      ctrl_url         = form.querySelector('.url'),
-                                      ctrl_notes       = form.querySelector('.notes');
-
-                                const btn_submit = form.querySelector('.submit');
-
-
-
-                                btn_submit.addEventListener('click', _submitHandler);
-                                form.addEventListener('submit', _submitHandler);
-
-                                function _submitHandler(e){
-                                    e.preventDefault();
-
-                                    kf.add(_getFormValues());
-                                    _updateOutput();
-                                }
-
-                                function _getFormValues(){
-                                    return {
-                                        title:       ctrl_title.value,
-                                        type:        ctrl_type.value,
-                                        parent:      ctrl_parent.value,
-                                        username:    ctrl_username.value,
-                                        password:    ctrl_password.value,
-                                        passConfirm: ctrl_passConfirm.value,
-                                        url:         ctrl_url.value,
-                                        notes:       ctrl_notes.value
-                                    }
-                                }
-                            }());
-                        </script>
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                     <h3 class="text-center">Keyfile Methods</h3>
                     <div class="row">
                         <div class="col-6 mb-0 pb-0">
-                            <label for="passphrase">Passphrase</label>
-                            <input id="passphrase" class="passphrase mb-0" type="text">
+                            <label for="v-passphrase">Passphrase</label>
+                            <input id="v-passphrase" type="text" v-model="passphrase">
                         </div>
                         <div class="col-6 mb-0 pb-0">
-                            <label for="salt">Salt</label>
-                            <input id="salt" class="salt mb-0" type="text">
+                            <label for="v-salt">Salt</label>
+                            <input id="v-salt" type="text" v-model="salt">
                         </div>
                         <div class="col-12 mt-0 pt-0">
-                            <button class="set-key btn btn-block btn-primary">setKey</button>
-                        </div>
-                        <div class="col-6 mb-0 pb-0">
-                            <button class="encrypt btn btn-block btn-danger">Encrypt</button>
-                        </div>
-                        <div class="col-6 mb-0 pb-0">
-                            <button class="decrypt btn btn-block btn-success">Decrypt</button>
-                        </div>
-                        <div class="col-12 mt-0 pt-0">
-                            <button class="to-tree btn btn-block btn-warn">toTree</button>
+                            <button @click="setKey" class="btn btn-block btn-primary mx-0">Set Key</button>
                         </div>
                     </div>
-                    <h3 class="text-center">Output</h3>
-                    <pre><code id="output"></code></pre>
+                    <div class="row">
+                        <div class="col-6 mb-0 pb-0">
+                            <button @click="encrypt" class="btn btn-block btn-danger">Encrypt</button>
+                        </div>
+                        <div class="col-6 mb-0 pb-0">
+                            <button @click="decrypt" class="btn btn-block btn-success">Decrypt</button>
+                        </div>
+                    </div>
                 </div>
 
-                <script>
-                    'use strict';
+                <div class="col-4 pt-5">
+                    <h3>Keyfile Data</h3>
+                    <pre><code>{{ output }}</code></pre>
 
-                    function _updateOutput(){
-                        const el = document.getElementById('output');
-
-                        el.innerText = kf.encrypted ? kf.keyfile : JSON.stringify(kf.keyfile, null, 4);
-                    }
-
-                    _updateOutput();
-
-                    (function() {
-                        const salt = crypt.genSalt();
-
-                        const ctrl_salt   = document.querySelector('.salt'),
-                              ctrl_pass   = document.querySelector('.passphrase'),
-                              btn_setKey  = document.querySelector('.btn.set-key'),
-                              btn_encrypt = document.querySelector('.btn.encrypt'),
-                              btn_decrypt = document.querySelector('.btn.decrypt'),
-                              btn_tree    = document.querySelector('.btn.to-tree');
+                    <h3>Tree View</h3>
+                    <pre><code>{{ JSON.stringify(tree, null, 4) }}</code></pre>
+                </div>
+            </div>
+        </div>
 
 
-                        btn_setKey.addEventListener('click', function (e){
-                            const passphrase = ctrl_pass.value;
+        <script>
+            'use strict';
 
-                            kf.setKey(passphrase, salt);
-                        });
+            (function() {
 
-                        btn_encrypt.addEventListener('click', function(e){
-                            kf.encrypt().then(() => _updateOutput()).catch(console.error)
-                        });
+                const kf = new Keyfile();
 
-                        btn_decrypt.addEventListener('click', function(e){
-                            kf.decrypt().then(() => _updateOutput()).catch(e => console.error('Bad password'));
-                        });
+                const viewModel = new Vue({
+                    el: '#vue-app',
+                    data(){
+                        return {
+                            type:            'entry',
+                            title:           '',
+                            parent:          '',
+                            username:        '',
+                            password:        '',
+                            confirmPassword: '',
+                            url:             '',
+                            notes:           '',
+                            passphrase:      '',
+                            salt:            '',
+                            output:          '',
+                            tree:            []
+                        }
+                    },
+                    methods: {
+                        formSubmit(e){
+                            kf.add({
+                                type:            this.type,
+                                title:           this.title,
+                                parent:          this.parent,
+                                username:        this.username,
+                                password:        this.password,
+                                confirmPassword: this.confirmPassword,
+                                url:             this.url,
+                                notes:           this.notes
+                            });
 
-                        btn_tree.addEventListener('click', function(e){
+                            this.output = kf.keyfile;
+                            this.tree   = kf.toTree();
+
+                            this.reset();
+                        },
+                        setKey(e){
+                            kf.setKey(this.passphrase, crypt.hex2ab(this.salt));
+                        },
+                        encrypt: async function(){
                             try{
-                                document.getElementById('output').innerText = JSON.stringify(kf.toTree(), null, 4);
+                                await kf.encrypt();
+
+                                this.output = kf.keyfile;
+                                this.tree   = null;
                             }
                             catch(e){
                                 console.error(e);
                             }
-                        });
+                        },
+                        decrypt: async function(){
+                            try{
+                                await kf.decrypt();
 
-                        ctrl_salt.value = crypt.ab2hex(salt);
-                    }());
+                                this.output = JSON.stringify(kf.keyfile, null, 4);
+                                this.tree   = kf.toTree();
+                            }
+                            catch(e){
+                                console.error(e);
+                            }
+                        },
+                        reset(){
+                            this.title           = '';
+                            this.parent          = '';
+                            this.username        = '';
+                            this.password        = '';
+                            this.confirmPassword = '';
+                            this.url             = '';
+                            this.notes           = '';
+                        }
+                    },
+                    mounted(){
+                        const salt = crypt.genSalt();
 
-                </script>
-            </div>
-        </div>
+                        this.salt = crypt.ab2hex(salt);
+
+                        this.output = JSON.stringify(kf.keyfile, null, 4);
+                    }
+                });
+
+            }());
+        </script>
     </body>
 </html>
