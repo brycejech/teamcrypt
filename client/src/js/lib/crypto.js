@@ -104,6 +104,8 @@ function _hexStringToIntArray(hex){
     return Uint8Array.from(arr);
 }
 
+export { _hexStringToIntArray as hex2ab }
+
 function _intToHex(n){
     // Convert integer to '0' padded, 2-digit hex string
     return `0${ n.toString(16) }`.substr(-2).toUpperCase();
