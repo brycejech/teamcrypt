@@ -15,6 +15,10 @@ const queries = [
         firstRow: true
     },
     {
+        name:     'user-get-all',
+        file:     './user-get-all.sql'
+    },
+    {
         name:     'keyfile-create',
         file:     './keyfile-create.sql',
         firstRow:  true
