@@ -4,7 +4,7 @@ CREATE TABLE keyfile
 (
     id           serial NOT NULL PRIMARY KEY,
     account      int    NOT NULL REFERENCES account(id),
-    keyfile      text   NOT NULL,
+    keyfile      text,
 
     created  timestamp with time zone DEFAULT (now() at time zone 'utc'),
     modified timestamp with time zone
