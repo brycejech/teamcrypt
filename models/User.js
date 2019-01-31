@@ -7,6 +7,7 @@ const pick = require('../lib/pick');
 function User(o){
     this.id       = o.id;
     this.uuid     = o.uuid;
+    this.name     = o.name;
     this.email    = o.email;
     this.username = o.username;
     this.password = o.password;
@@ -25,7 +26,7 @@ function User(o){
 
 User.prototype.getPublicObject = function getPublicUserObject(){
     const publicProps = [
-        'id', 'name', 'uuid', 'registered', 'keyfile'
+        'id', 'name', 'username', 'email', 'uuid', 'registered', 'keyfile'
     ];
 
     return pick(publicProps, this);
@@ -41,6 +42,12 @@ User.get = async function getUser(o){
     const user = await db.q('user-get', [username]);
 
     return new User(user);
+}
+
+User.getAll = async function getAllUsers(){
+    const users = await db.q('user-get-all');
+
+    return users.map(u => new User(u));
 }
 
 module.exports = User;
