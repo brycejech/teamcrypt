@@ -75,6 +75,29 @@ server.get('/user/:username', async (req, res, next) => {
     }
 });
 
+server.post('/user/:username/keyfile', async (req, res, next) => {
+
+    if(!req.session.user){
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const keyfile = req.body.keyfile;
+
+    res.json({ keyfile });
+});
+
+server.get('/users', async (req, res, next) => {
+    try{
+        const users = (await User.getAll()).map(u => u.getPublicObject());
+
+        return res.json([...users]);
+    }
+    catch(e){
+        console.log(e);
+        return res.status(500).json({ e: e.message })
+    }
+});
+
 server.post('/login', async (req, res, next) => {
     const username = req.body.username || req.body.email,
           password = req.body.password;
@@ -83,12 +106,6 @@ server.post('/login', async (req, res, next) => {
           authed = await app.crypto.verifyPassword(password, user.password);
 
     if(authed === true){
-        const kf = new Keyfile(user.id, user.keyfile);
-
-        const { key } = await app.crypto.deriveKey(password, user.salt);
-
-        user.keyfile = kf.decrypt(key);
-
         res.json(user.getPublicObject());
     }
     else{
