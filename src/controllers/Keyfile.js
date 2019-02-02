@@ -1,6 +1,6 @@
 'use strict';
 
-import { Keyfile } from '../../../../shared/controllers';
+import { Keyfile } from '../../shared/controllers/index.js';
 
 import * as crypto from '../lib/crypto';
 
