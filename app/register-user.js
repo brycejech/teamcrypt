@@ -7,31 +7,37 @@ const db = require('../db');
 
 module.exports = async function registerUser(name, email, username, password){
 
-    let user, hash, key, salt;
-
-    // Empty JSON keyfile
-    let keyfile = '[]';
+    let user, hash;
 
     try{
         // Hash the users password
         hash = await hashPassword(password);
 
-        // Generate an encryption key and salt for the user
-        ({ key, salt } = await deriveKey(password));
+        const params = [ name, email, username, hash, uuid() ];
 
-        // Encrypt the empty keyfile
-        keyfile = await encrypt(key, keyfile);
+        user = await db.query('user-create', params);
+
+        user.keyfile = await db.query('keyfile-create', [ user.id, null ]);
+
+        return user;
 
     }
-    catch(e){ throw e }
+    catch(e){
+        if(e.detail){
+            const detail = e.detail.toLowerCase();
 
-    // Insert the new user and keyfile into db
-    try{
-        user = await db.query('user-create', [name, email, username, hash, uuid(), salt]);
+            if(/key.*already.*exists/.test(detail)){
+                const field = detail.match(/key\s\((.*?)\)=/);
 
-        user.keyfile = await db.query('keyfile-create', [user.id, keyfile]);
+                if(field.length > 1){
+                    const err = new Error('duplicate-key');
+                    err.field = field[1];
+
+                    throw err;
+                }
+            }
+        }
+        
+        throw e;
     }
-    catch(e){ throw e }
-
-    return user;
 }
