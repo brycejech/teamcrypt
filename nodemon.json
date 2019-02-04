@@ -1,0 +1,8 @@
+
+{
+    "ignore": [ "dist" ],
+    "events": {
+        "restart": "node build/build.js",
+        "start": "node build/build.js"
+    }
+}
