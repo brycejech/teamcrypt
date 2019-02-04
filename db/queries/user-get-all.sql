@@ -6,7 +6,6 @@ SELECT
     , account.password
     , account.uuid
     , account.registered
-    , account.salt
 
     , keyfile.keyfile
     , keyfile.id          AS "keyfileID"

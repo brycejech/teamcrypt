@@ -11,7 +11,6 @@ function User(o){
     this.email    = o.email;
     this.username = o.username;
     this.password = o.password;
-    this.salt     = o.salt;
 
     this.keyfile = {
         id:           o.keyfileID,

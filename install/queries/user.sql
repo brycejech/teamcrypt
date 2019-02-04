@@ -8,7 +8,6 @@ CREATE TABLE account
     username    varchar(64)  NOT NULL   UNIQUE,
     password    char(60)     NOT NULL,
     uuid        uuid         NOT NULL,
-    salt        char(64)     NOT NULL,
 
     registered  timestamp with time zone DEFAULT (now() at time zone 'utc')
 );
