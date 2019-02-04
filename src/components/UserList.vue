@@ -1,30 +1,30 @@
 <template lang="html">
     <div class="user-list">
         <h2>Users</h2>
-        <ul style="list-style-type: none">
-            <li v-for="user in users" style="margin: 0; padding: 0">
+        <div class="row">
+            <div v-for="user in users" class="col-4">
                 <div class="card">
                     <table style="margin-bottom: 0">
                         <tr>
-                            <td>Name:</td>
+                            <th>Name:</th>
                             <td>{{ user.name }}</td>
                         </tr>
                         <tr>
-                            <td>Email:</td>
+                            <th>Email:</th>
                             <td>{{ user.email }}</td>
                         </tr>
                         <tr>
-                            <td>Username:</td>
+                            <th>Username:</th>
                             <td>{{ user.username }}</td>
                         </tr>
                         <tr>
-                            <td>Registered</td>
+                            <th>Registered</th>
                             <td>{{ user.registered }}</td>
                         </tr>
                     </table>
                 </div>
-            </li>
-        </ul>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -35,7 +35,6 @@ export default {
             users: []
         }
     },
-    template: '#user-list-template',
     created() {
         fetch('/users')
             .then(r => r.json())
