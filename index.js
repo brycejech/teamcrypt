@@ -43,7 +43,7 @@ server.use(session({
     }
 }));
 
-server.use(express.static(path.join(__dirname, 'client')));
+server.use(express.static(path.join(__dirname, 'dist')));
 
 // Accept form data
 const jsonBody = bodyParser.json(),
@@ -54,10 +54,6 @@ server.use(jsonBody, urlBody);
 server.use((req, res, next) => {
     res.removeHeader('X-Powered-By');
     next();
-});
-
-server.get('/', (req, res, next) => {
-    return res.json({ message: 'Running' });
 });
 
 server.get('/user/:username', async (req, res, next) => {
@@ -111,6 +107,60 @@ server.post('/login', async (req, res, next) => {
     else{
         res.json({ message: 'Incorrect username/password' });
     }
+});
+
+server.post('/register', async (req, res, next) => {
+
+    const {
+        name, email, username, password, confirm
+    } = req.body;
+
+    console.log(req.body);
+
+    if(!(
+           name
+        && email
+        && username
+        && password
+        && confirm
+    )){
+        return res.status(400).json({
+            message: 'Missing required parameters'
+        });
+    }
+
+    if(password !== confirm){
+        return res.status(400).json({
+            message: 'Passwords do not match'
+        });
+    }
+
+    try{
+        const user = await app.registerUser(name, email, username, password);
+
+        return res.json(user);
+    }
+    catch(e){
+        if(e.message === 'duplicate-key'){
+
+            res.status(400);
+
+            switch(e.field){
+                case 'email':
+                    return res.send({ message: 'email-exists' });
+                case 'username':
+                    return res.send({ message: 'username-exists' });
+                default:
+                    return res.send({ message: `${ field }-exists` });
+            }
+        }
+        return res.status(500).send({ message: 'Server error' });
+    }
+
+});
+
+server.use((req, res, next) => {
+    return res.redirect('/');
 });
 
 server.listen(8080);
