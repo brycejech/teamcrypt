@@ -1,5 +1,6 @@
 <template lang="html">
     <div class="register">
+        <h2>Register</h2>
         <form @submit.prevent="submit">
             <div class="col-12 pb-0">
                 <input v-model="name" type="text" class="mb-0" placeholder="Name">
@@ -38,6 +39,11 @@ export default {
     },
     methods: {
         submit(){
+
+            if(this.password !== this.confirm){
+                return alert('Passwords do not match');
+            }
+
             const data = {
                 name:     this.name,
                 email:    this.email,
@@ -45,7 +51,32 @@ export default {
                 password: this.password,
                 confirm:  this.confirm
             }
-            console.log(data);
+
+            fetch('/register', {
+                method: 'POST',
+                mode: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(r => r.json())
+            .then(r => {
+                console.log(r);
+
+                this.reset();
+            })
+            .catch(e => {
+                console.log(e);
+            });
+        },
+
+        reset(){
+            this.name     = '';
+            this.email    = '';
+            this.username = '';
+            this.password = '';
+            this.confirm  = '';
         }
     }
 }
