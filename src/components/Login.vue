@@ -29,19 +29,11 @@ export default {
     },
     methods: {
         submit(){
-            const data = {
-                username: this.username,
-                password: this.password
-            }
-
-            fetch('/login', {
-                method: 'POST',
-                mode: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8'
-                },
-                body: JSON.stringify(data)
-            }).then( r => r.json() ).then(r => console.log(r));
+            this.$api.login(this.username, this.password)
+                .then(r => {
+                    this.$store.commit('updateUser', r);
+                })
+                .catch(e => console.log(e));
         }
     }
 }
