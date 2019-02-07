@@ -1,19 +1,21 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 
-import Login    from '@/components/Login'
-import Register from '@/components/Register'
-import AddEntry from '@/components/AddEntry'
-import UserList from '@/components/UserList'
+import Home     from '@/components/Home';
+import Login    from '@/components/Login';
+import Register from '@/components/Register';
+import AddEntry from '@/components/AddEntry';
+import UserList from '@/components/UserList';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
     mode: 'history',
     routes: [
         {
             path: '/',
-            redirect: '/login'
+            name: 'home',
+            component: Home
         },
         {
             path: '/add-entry',
