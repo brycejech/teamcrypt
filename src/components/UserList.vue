@@ -36,10 +36,8 @@ export default {
         }
     },
     created() {
-        fetch('/users')
-            .then(r => r.json())
-            .then(r => this.users = r)
-            .catch(e => console.error(e));
+        this.$api.getUsers()
+            .then(users => this.users = users);
     }
 }
 </script>
