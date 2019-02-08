@@ -7,12 +7,11 @@ Vue.use(Vuex);
 
 import { Keyfile } from '../controllers/';
 
+const keyfile = new Keyfile();
+
 const store = new Vuex.Store({
     state: {
-        keyfile: {
-            data:         '',
-            lastModified: ''
-        },
+        keyfile: '',
         user: {
             id:         '',
             uuid:       '',
@@ -20,6 +19,11 @@ const store = new Vuex.Store({
             email:      '',
             username:   '',
             registered: ''
+        }
+    },
+    getters: {
+        keyfile(state){
+            return state.keyfile;
         }
     },
     mutations: {
@@ -32,6 +36,14 @@ const store = new Vuex.Store({
             uState.email      = user.email;
             uState.username   = user.username;
             uState.registered = user.registered;
+        },
+        updateKeyfile(state, data){
+            keyfile.keyfile = data.keyfile.data || [];
+            state.keyfile = JSON.stringify(keyfile.toTree(), null, 2);
+        },
+        addKeyfileEntry(state, entry){
+            keyfile.add(entry);
+            state.keyfile = JSON.stringify(keyfile.toTree(), null, 2);
         }
     }
 });
