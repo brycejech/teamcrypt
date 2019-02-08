@@ -47,6 +47,11 @@ export default {
         user(){
             return this.$store.state.user
         }
+    },
+    created(){
+        if(!this.$store.state.user.name){
+            this.$router.push({ name: 'login' });
+        }
     }
 }
 
