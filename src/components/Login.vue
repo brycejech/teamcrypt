@@ -32,6 +32,9 @@ export default {
             this.$api.login(this.username, this.password)
                 .then(r => {
                     this.$store.commit('updateUser', r);
+                    this.$store.commit('updateKeyfile', r);
+
+                    this.$router.push({ name: 'home' });
                 })
                 .catch(e => console.log(e));
         }
