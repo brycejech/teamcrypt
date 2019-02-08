@@ -44,15 +44,15 @@
                 </div>
             </div>
         </form>
+
+        <code>
+            <pre>{{ keyfile }}</pre>
+        </code>
     </div>
 </template>
 
 <script>
 'use strict';
-
-import { Keyfile } from '@/controllers/';
-
-const kf = new Keyfile();
 
 export default {
     data(){
@@ -84,9 +84,7 @@ export default {
                 notes:           this.notes
             };
 
-            kf.add(data);
-            this.output = kf.keyfile;
-            this.tree   = kf.toTree();
+            this.$store.commit('addKeyfileEntry', data);
 
             this.reset();
         },
@@ -99,9 +97,18 @@ export default {
             this.url             = '';
             this.notes           = '';
         }
+    },
+    computed: {
+        keyfile(){
+            return this.$store.getters.keyfile;
+        }
     }
 }
 </script>
 
-<style lang="css" scoped>
+<style lang="sass" scoped>
+
+pre
+    text-align: left
+
 </style>
