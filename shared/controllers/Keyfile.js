@@ -36,6 +36,10 @@ Keyfile.prototype.add = function keyfileAdd(obj){
         notes
     }
 
+    if(this.keyfile === null || this.keyfile === undefined){
+        this.keyfile = [];
+    }
+    
     this.keyfile.push(entry);
 
     return this;
