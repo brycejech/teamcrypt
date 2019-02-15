@@ -1,6 +1,8 @@
 'use strict';
 
-export const api = {};
+const api = {};
+
+export default api;
 
 api.login = async function login(username, password){
 

@@ -3,8 +3,8 @@
     "ext": "js,json,vue,html,sass",
     "ignore": [ "dist" ],
     "events": {
-        "restart": "node build/build.js",
-        "start": "node build/build.js"
+        "restart": "npm run build",
+        "start": "npm run build"
     },
     "verbose": true
 }

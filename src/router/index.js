@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import Home     from '@/components/Home';
-import Login    from '@/components/Login';
-import Register from '@/components/Register';
-import AddEntry from '@/components/AddEntry';
-import UserList from '@/components/UserList';
+import Home     from '@/views/Home';
+import Login    from '@/views/Login';
+import Register from '@/views/Register';
+import AddEntry from '@/views/AddEntry';
+import UserList from '@/views/UserList';
 
 Vue.use(Router);
 
@@ -37,5 +37,13 @@ export default new Router({
             name: 'users',
             component: UserList
         }
+        // {
+        //   path: '/about',
+        //   name: 'about',
+        //   // route level code-splitting
+        //   // this generates a separate chunk (about.[hash].js) for this route
+        //   // which is lazy-loaded when the route is visited.
+        //   component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+        // }
     ]
-})
+});

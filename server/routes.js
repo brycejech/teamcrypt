@@ -1,14 +1,9 @@
 'use strict';
 
-const { Router } = require('express');
+const router = require('express').Router();
 
 const app = require('./app')
-
-const { Keyfile } = require('./controllers'),
-      { User }    = require('./models');
-
-const router = Router();
-
+const { User } = require('./models');
 
 router.get('/user', async (req, res, next) => {
 
