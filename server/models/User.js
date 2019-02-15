@@ -2,7 +2,7 @@
 
 const db = require('../db');
 
-const pick = require('../lib/pick');
+const pick = require('../../lib/pick');
 
 function User(o){
     this.id       = o.id;

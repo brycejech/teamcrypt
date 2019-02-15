@@ -43,7 +43,7 @@ server.use(session({
 }));
 
 // Serve Vue build files
-server.use(express.static(path.join(__dirname, 'dist')));
+server.use(express.static(path.resolve(__dirname, '../dist')));
 
 // Accept form data
 const jsonBody = bodyParser.json(),

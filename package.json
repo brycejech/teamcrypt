@@ -4,13 +4,13 @@
   "version": "0.0.1",
   "description": "Team Password Sharing",
   "private": true,
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "build": "node build/build.js",
     "test": "jest --verbose",
-    "serve-dev": "nodemon ."
+    "serve-dev": "nodemon server"
   },
   "repository": {
     "type": "git",

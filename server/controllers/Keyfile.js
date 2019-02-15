@@ -1,6 +1,6 @@
 'use strict';
 
-const { Keyfile } = require('../shared/controllers');
+const { Keyfile } = require('../../shared/controllers');
 const crypto = require('../app/crypto');
 
 Keyfile.prototype.decrypt = function keyfileDecrypt(key){
