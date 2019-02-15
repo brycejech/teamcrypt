@@ -15,6 +15,7 @@ function User(o){
     this.keyfile = {
         id:           o.keyfileID,
         data:         o.keyfile,
+        salt:         o.keyfileSalt,
         lastModified: o.keyfileLastModified
     }
 

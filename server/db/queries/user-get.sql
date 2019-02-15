@@ -9,6 +9,7 @@ SELECT
     , account.registered
 
     , keyfile.keyfile
+    , keyfile.salt        AS "keyfileSalt"
     , keyfile.id          AS "keyfileID"
     , keyfile.modified    AS "keyfileLastModified"
 
