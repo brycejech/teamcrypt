@@ -32,6 +32,8 @@
 <script>
 'use strict';
 
+import { ab2hex, genSalt } from '../lib/crypto';
+
 export default {
     data() {
         return {
@@ -39,7 +41,8 @@ export default {
             email:    '',
             username: '',
             password: '',
-            confirm:  ''
+            confirm:  '',
+            salt:     ab2hex(genSalt())
         }
     },
     methods: {
@@ -54,7 +57,8 @@ export default {
                 email:    this.email,
                 username: this.username,
                 password: this.password,
-                confirm:  this.confirm
+                confirm:  this.confirm,
+                salt:     this.salt
             }
 
             fetch('/register', {
