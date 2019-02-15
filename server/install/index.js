@@ -16,7 +16,7 @@ const queries = [
     }
 ].map(q => {
     try{
-        q.sql = fs.readFileSync(path.resolve(q.file), 'utf8');
+        q.sql = fs.readFileSync(path.resolve(__dirname, q.file), 'utf8');
     }
     catch(e){
         console.error(`Error loading query file for ${ q.name }`);
@@ -26,27 +26,19 @@ const queries = [
 });
 
 
-const promises = [];
-
-let last;
-
-queries.forEach(async (q) => {
-
-    try{
-        setTimeout(async () => {
-            last = db.q(q.sql, [], { rawQuery: true });
-
-            await last
-
-            promises.push(last);
-        }, 1000)
-
+(async () => {
+    let last;
+    for(const q of queries){
+        try{
+            last = await db.q(q.sql, [], { rawQuery: true });
+        }
+        catch(e){
+            console.log(`Error with install query "${ q.name }"`);
+        }
     }
-    catch(e){
-        console.log(`Error with query "${ q.name }"`)
-        console.log(e);
-    }
+    await last;
 
-});
+    console.log('Installation complete');
 
-// Promise.all(promises).then(() => db.disconnect());
+    db.disconnect();
+})();
