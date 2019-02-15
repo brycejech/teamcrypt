@@ -5,7 +5,7 @@ const { encrypt, hashPassword, deriveKey } = require('./crypto');
 
 const db = require('../db');
 
-module.exports = async function registerUser(name, email, username, password){
+module.exports = async function registerUser(name, email, username, password, salt){
 
     let user, hash;
 
@@ -17,7 +17,7 @@ module.exports = async function registerUser(name, email, username, password){
 
         user = await db.query('user-create', params);
 
-        user.keyfile = await db.query('keyfile-create', [ user.id, null ]);
+        user.keyfile = await db.query('keyfile-create', [ user.id, null, salt ]);
 
         return user;
 
@@ -37,7 +37,7 @@ module.exports = async function registerUser(name, email, username, password){
                 }
             }
         }
-        
+
         throw e;
     }
 }

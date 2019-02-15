@@ -71,7 +71,7 @@ router.post('/login', async (req, res, next) => {
 router.post('/register', async (req, res, next) => {
 
     const {
-        name, email, username, password, confirm
+        name, email, username, password, confirm, salt
     } = req.body;
 
     if(!(
@@ -80,6 +80,7 @@ router.post('/register', async (req, res, next) => {
         && username
         && password
         && confirm
+        && salt
     )){
         return res.status(400).json({
             message: 'Missing required parameters'
@@ -93,7 +94,7 @@ router.post('/register', async (req, res, next) => {
     }
 
     try{
-        const user = await app.registerUser(name, email, username, password);
+        const user = await app.registerUser(name, email, username, password, salt);
 
         return res.json(user);
     }
