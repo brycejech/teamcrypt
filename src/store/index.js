@@ -6,6 +6,7 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 
 import { Keyfile } from '../controllers/';
+import { hex2ab }  from '../lib/crypto';
 
 const keyfile = new Keyfile();
 
@@ -27,23 +28,43 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
-        updateUser(state, user){
-            const uState = state.user;
-
-            uState.id         = user.id;
-            uState.uuid       = user.uuid;
-            uState.name       = user.name;
-            uState.email      = user.email;
-            uState.username   = user.username;
-            uState.registered = user.registered;
+        login(state, user){
+            state.user.id         = user.id;
+            state.user.uuid       = user.uuid;
+            state.user.name       = user.name;
+            state.user.email      = user.email;
+            state.user.username   = user.username;
+            state.user.registered = user.registered;
         },
+        // Move this to login action
         updateKeyfile(state, data){
             keyfile.keyfile = data.keyfile.data || [];
-            state.keyfile = JSON.stringify(keyfile.toTree(), null, 2);
+
+            keyfile.setKey(data.password, hex2ab(data.keyfile.salt))
+                .then(() => {
+                    window.keyfile = keyfile;
+
+                    state.keyfile = JSON.stringify(keyfile.toTree(), null, 2);
+                })
+                .catch(e => console.log(e));
         },
         addKeyfileEntry(state, entry){
             keyfile.add(entry);
             state.keyfile = JSON.stringify(keyfile.toTree(), null, 2);
+        }
+    },
+    actions: {
+        login(context, user){
+            const data = {
+                id:         user.id,
+                uuid:       user.uuid,
+                name:       user.name,
+                email:      user.email,
+                username:   user.username,
+                password:   user.password,
+                registered: user.registered
+            }
+            context.commit(user);
         }
     }
 });
