@@ -31,7 +31,9 @@ export default {
         submit(){
             this.$api.login(this.username, this.password)
                 .then(r => {
-                    this.$store.commit('updateUser', r);
+                    // Pass the submitted pass to $store for keyfile decryption
+                    r.password = this.password;
+                    this.$store.dispatch('login', r);
                     this.$store.commit('updateKeyfile', r);
 
                     this.$router.push({ name: 'home' });
