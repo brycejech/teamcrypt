@@ -5,23 +5,28 @@ const fs   = require('fs'),
 
 const queries = [
     {
-        name:     'user-create',
-        file:     './user-create.sql',
+        name: 'user-create',
+        file: './user-create.sql',
         firstRow:  true
     },
     {
-        name:     'user-get',
-        file:     './user-get.sql',
+        name: 'user-get',
+        file: './user-get.sql',
         firstRow: true
     },
     {
-        name:     'user-get-all',
-        file:     './user-get-all.sql'
+        name: 'user-get-all',
+        file: './user-get-all.sql'
     },
     {
-        name:     'keyfile-create',
-        file:     './keyfile-create.sql',
+        name: 'keyfile-create',
+        file: './keyfile-create.sql',
         firstRow:  true
+    },
+    {
+        name:  'keyfile-update',
+        file: './keyfile-update.sql',
+        firstRow: true
     }
 ].map(q => {
     try{
