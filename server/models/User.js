@@ -50,4 +50,14 @@ User.getAll = async function getAllUsers(){
     return users.map(u => new User(u));
 }
 
+User.updateKeyfile = async function updateKeyfile(user, data, salt){
+    if(!(user && data && salt)){
+        throw new Error('userID, data, and salt arguments required');
+    }
+
+    const keyfile = await db.q('keyfile-update', [user, data, salt]);
+
+    return keyfile;
+}
+
 module.exports = User;
