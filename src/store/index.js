@@ -10,13 +10,12 @@ import * as crypto  from '../lib/crypto';
 
 import api from '../api/';
 
-let keyfile;
-
-window.keyfile = keyfile;
+let keyfile = window.keyfile = new Keyfile();
 
 const store = new Vuex.Store({
     state: {
         keyfile: '',
+        entries: [],
         user: {
             id:         '',
             uuid:       '',
@@ -29,6 +28,12 @@ const store = new Vuex.Store({
     getters: {
         keyfile(state){
             return state.keyfile;
+        },
+        kefileTags(state){
+            return keyfile.tags ? keyfile.tags : [];
+        },
+        keyfileEntries(state){
+            return state.entries;
         }
     },
     mutations: {
@@ -40,17 +45,8 @@ const store = new Vuex.Store({
             state.user.username   = user.username;
             state.user.registered = user.registered;
         },
-        keyfileUpdated(state){
-            try{
-                const tree = keyfile.toTree(),
-                      json = JSON.stringify(tree, null, 2);
-
-                state.keyfile = json;
-            }
-            catch(e){
-                console.error('Error: keyfile.toTree():');
-                console.error(e.message);
-            }
+        setEntries(state, arr){
+            state.entries = arr;
         }
     },
     actions: {
@@ -66,12 +62,15 @@ const store = new Vuex.Store({
 
             keyfile = window.keyfile = new Keyfile(null, user.keyfile.data, user.salt);
 
-            await context.dispatch('keyfileSetKey', { pass: user.password, salt: user.keyfile.salt });
+            await context.dispatch('keyfileSetKey', {
+                pass: user.password,
+                salt: user.keyfile.salt
+            });
 
             if(typeof keyfile.data === 'string'){
                 try{
                     await keyfile.decrypt();
-                    context.commit('keyfileUpdated');
+                    context.commit('setEntries', keyfile.data);
                 }
                 catch(e){
                     alert('FAILED TO DECRYPT KEYFILE');
@@ -120,7 +119,7 @@ const store = new Vuex.Store({
 
                     await context.dispatch('keyfileDecrypt');
 
-                    context.commit('keyfileUpdated');
+                    context.commit('setEntries', keyfile.data);
                 }
                 catch(e){
                     console.error(e);
@@ -131,6 +130,9 @@ const store = new Vuex.Store({
             catch(e){
                 throw e;
             }
+        },
+        keyfileGetMatchingTags(){
+
         }
     }
 });
