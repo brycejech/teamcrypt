@@ -4,7 +4,6 @@ import Router from 'vue-router';
 import Home     from '@/views/Home';
 import Login    from '@/views/Login';
 import Register from '@/views/Register';
-import AddEntry from '@/views/AddEntry';
 import UserList from '@/views/UserList';
 
 Vue.use(Router);
@@ -16,11 +15,6 @@ export default new Router({
             path: '/',
             name: 'home',
             component: Home
-        },
-        {
-            path: '/add-entry',
-            name: 'add-entry',
-            component: AddEntry
         },
         {
             path: '/login',
