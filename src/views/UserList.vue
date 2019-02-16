@@ -1,30 +1,26 @@
 <template lang="html">
     <div class="user-list">
         <h2>Users</h2>
-        <div class="row">
-            <div v-for="user in users" class="col-4">
-                <div class="card">
-                    <table style="margin-bottom: 0">
-                        <tr>
-                            <th>Name:</th>
-                            <td>{{ user.name }}</td>
-                        </tr>
-                        <tr>
-                            <th>Email:</th>
-                            <td>{{ user.email }}</td>
-                        </tr>
-                        <tr>
-                            <th>Username:</th>
-                            <td>{{ user.username }}</td>
-                        </tr>
-                        <tr>
-                            <th>Registered</th>
-                            <td>{{ user.registered }}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
+        <table class="table-striped mb-0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Username</th>
+                    <th>UUID</th>
+                    <th>Registered</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="user in users">
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.uuid }}</td>
+                    <td>{{ user.registered }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
@@ -43,6 +39,8 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-    .card
-        margin-bottom: 2rem
+    table
+        tbody
+            tr:nth-child(odd)
+                background-color: rgba(black, 0.05)
 </style>
