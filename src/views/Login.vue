@@ -34,7 +34,6 @@ export default {
                     // Pass the submitted pass to $store for keyfile decryption
                     r.password = this.password;
                     this.$store.dispatch('login', r);
-                    // this.$store.commit('updateKeyfile', r);
 
                     this.$router.push({ name: 'home' });
                 })
