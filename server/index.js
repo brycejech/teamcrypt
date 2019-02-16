@@ -59,4 +59,4 @@ server.use((req, res, next) => {
 // Mount routes
 server.use(routes);
 
-server.listen(8080, () => console.log('Express server listening on 8080'));
+server.listen(8002, () => console.log('Express server listening on 8002'));
