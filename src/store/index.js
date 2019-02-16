@@ -5,10 +5,14 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-import { Keyfile } from '../controllers/';
-import { hex2ab }  from '../lib/crypto';
+import { Keyfile }  from '../controllers/';
+import * as crypto  from '../lib/crypto';
 
-const keyfile = new Keyfile();
+import api from '../api/';
+
+let keyfile;
+
+window.keyfile = keyfile;
 
 const store = new Vuex.Store({
     state: {
@@ -36,35 +40,66 @@ const store = new Vuex.Store({
             state.user.username   = user.username;
             state.user.registered = user.registered;
         },
-        // Move this to login action
-        updateKeyfile(state, data){
-            keyfile.keyfile = data.keyfile.data || [];
+        keyfileUpdated(state){
+            try{
+                const tree = keyfile.toTree(),
+                      json = JSON.stringify(tree, null, 2);
 
-            keyfile.setKey(data.password, hex2ab(data.keyfile.salt))
-                .then(() => {
-                    window.keyfile = keyfile;
-
-                    state.keyfile = JSON.stringify(keyfile.toTree(), null, 2);
-                })
-                .catch(e => console.log(e));
-        },
-        addKeyfileEntry(state, entry){
-            keyfile.add(entry);
-            state.keyfile = JSON.stringify(keyfile.toTree(), null, 2);
+                state.keyfile = json;
+            }
+            catch(e){
+                console.error('Error: keyfile.toTree():');
+                console.error(e.message);
+            }
         }
     },
     actions: {
         login(context, user){
-            const data = {
+            context.commit('login', {
                 id:         user.id,
                 uuid:       user.uuid,
                 name:       user.name,
                 email:      user.email,
                 username:   user.username,
-                password:   user.password,
                 registered: user.registered
+            });
+
+            keyfile = window.keyfile = new Keyfile(null, user.keyfile.data, user.salt);
+            
+            return context.dispatch('keyfileSetKey', { pass: user.password, salt: user.keyfile.salt });
+        },
+        keyfileSetKey(context, { pass, salt }){
+            salt = typeof salt === 'string'
+                ? crypto.hex2ab(salt)
+                : salt;
+
+            return keyfile.setKey(pass, salt);
+        },
+        keyfileEncrypt(){
+            return keyfile.encrypt();
+        },
+        keyfileDecrypt(){
+            return keyfile.decrypt();
+        },
+        async keyfileAddEntry(context, entry){
+            try{
+                keyfile.add(entry);
+
+                await keyfile.encrypt();
+
+                const salt = typeof keyfile.salt === 'string'
+                    ? salt
+                    : crypto.ab2hex(keyfile.salt);
+
+                const data = keyfile.data;
+
+                api.updateKeyfile({ data, salt })
+                    .then(r => console.log(r))
+                    .catch(e => console.log(e));
             }
-            context.commit(user);
+            catch(e){
+                throw e;
+            }
         }
     }
 });

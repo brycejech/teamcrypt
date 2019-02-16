@@ -84,7 +84,7 @@ export default {
                 notes:           this.notes
             };
 
-            this.$store.commit('addKeyfileEntry', data);
+            this.$store.dispatch('keyfileAddEntry', data);
 
             this.reset();
         },
