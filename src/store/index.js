@@ -54,7 +54,7 @@ const store = new Vuex.Store({
         }
     },
     actions: {
-        login(context, user){
+        async login(context, user){
             context.commit('login', {
                 id:         user.id,
                 uuid:       user.uuid,
@@ -65,8 +65,18 @@ const store = new Vuex.Store({
             });
 
             keyfile = window.keyfile = new Keyfile(null, user.keyfile.data, user.salt);
-            
-            return context.dispatch('keyfileSetKey', { pass: user.password, salt: user.keyfile.salt });
+
+            await context.dispatch('keyfileSetKey', { pass: user.password, salt: user.keyfile.salt });
+
+            if(typeof keyfile.data === 'string'){
+                try{
+                    await keyfile.decrypt();
+                    context.commit('keyfileUpdated');
+                }
+                catch(e){
+                    alert('FAILED TO DECRYPT KEYFILE');
+                }
+            }
         },
         keyfileSetKey(context, { pass, salt }){
             salt = typeof salt === 'string'
@@ -85,7 +95,7 @@ const store = new Vuex.Store({
             try{
                 keyfile.add(entry);
 
-                await keyfile.encrypt();
+                await context.dispatch('keyfileEncrypt');
 
                 const salt = typeof keyfile.salt === 'string'
                     ? salt
@@ -93,9 +103,20 @@ const store = new Vuex.Store({
 
                 const data = keyfile.data;
 
-                api.updateKeyfile({ data, salt })
-                    .then(r => console.log(r))
-                    .catch(e => console.log(e));
+                try{
+                    const newData = await api.updateKeyfile({ data, salt });
+
+                    keyfile.data = newData.keyfile;
+
+                    await context.dispatch('keyfileDecrypt');
+
+                    context.commit('keyfileUpdated');
+                }
+                catch(e){
+                    console.error(e);
+                }
+
+
             }
             catch(e){
                 throw e;
