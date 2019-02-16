@@ -10,6 +10,11 @@
             </router-link>
             <ul>
                 <li>
+                    <router-link to='/'>
+                        <span>Home</span>
+                    </router-link>
+                </li>
+                <li>
                     <router-link to="/login">
                         <span>Login</span>
                     </router-link>
@@ -17,11 +22,6 @@
                 <li>
                     <router-link to="/register">
                         <span>Register</span>
-                    </router-link>
-                </li>
-                <li>
-                    <router-link to="/add-entry">
-                        <span>Add Entry</span>
                     </router-link>
                 </li>
                 <li>
