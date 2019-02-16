@@ -5,7 +5,7 @@ const router = require('express').Router();
 const app = require('./app')
 const { User } = require('./models');
 
-router.get('/user', async (req, res, next) => {
+router.get('/api/user', async (req, res, next) => {
 
     if(!req.session.user){
         return res.status(401).json({ message: 'Unauthorized' });
@@ -24,7 +24,7 @@ router.get('/user', async (req, res, next) => {
     }
 });
 
-router.post('/user/keyfile', async (req, res, next) => {
+router.post('/api/user/keyfile', async (req, res, next) => {
 
     if(!req.session.user){
         return res.status(401).json({ message: 'Unauthorized' });
@@ -42,7 +42,7 @@ router.post('/user/keyfile', async (req, res, next) => {
     }
 });
 
-router.get('/users', async (req, res, next) => {
+router.get('/api/users', async (req, res, next) => {
 
     console.log(req.session.user);
 
@@ -57,7 +57,7 @@ router.get('/users', async (req, res, next) => {
     }
 });
 
-router.post('/login', async (req, res, next) => {
+router.post('/api/login', async (req, res, next) => {
     const username = req.body.username || req.body.email,
           password = req.body.password;
 
@@ -75,7 +75,7 @@ router.post('/login', async (req, res, next) => {
     }
 });
 
-router.post('/register', async (req, res, next) => {
+router.post('/api/register', async (req, res, next) => {
 
     const {
         name, email, username, password, confirm, salt
