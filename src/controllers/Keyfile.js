@@ -6,7 +6,24 @@ function Keyfile(key, file, salt){
     this.key       = key;
     this.data      = file || [];
     this.salt      = salt;
-    this.encrypted = typeof file === 'string'
+    this.encrypted = typeof file === 'string';
+
+    Object.defineProperty(this, 'tags', {
+        get(){
+            if(this.encrypted) return [];
+            if(!this.data)     return new Set();
+
+            const tags = new Set();
+
+            this.data.forEach(entry => {
+                entry.tags.forEach(tag => {
+                    tags.add(tag);
+                });
+            });
+
+            return tags;
+        }
+    });
 
     return this;
 }
@@ -15,24 +32,18 @@ Keyfile.prototype.add = function keyfileAdd(obj){
     if(this.encrypted) throw new Error('Must decrypt before adding items');
     if(!obj.title)     throw new Error('Must provide a title')
 
-    let { title, type, parent, username, password, url, notes } = obj;
+    let { title, type, tags, username, password, url, notes } = obj;
+
+    if(!tags) tags = [];
+
+    if(typeof tags === 'string') tags = [ tags ];
 
     type = type || 'entry';
-
-    if(type === 'entry' && parent){
-        let parentEntry = this.findEntry(parent);
-
-        if(!parentEntry){
-            parentEntry = { type:  'folder', title:  parent };
-
-            this.data.push(parentEntry);
-        }
-    }
 
     const entry = {
         title,
         type,
-        parent,
+        tags,
         username,
         password,
         url,
@@ -62,43 +73,35 @@ Keyfile.prototype.remove = function keyfileRemove(title){
     return this;
 }
 
-Keyfile.prototype.toTree = function keyfileToTree(){
-    if(this.encrypted) throw new Error('Must decrypt before building tree');
-
-    // Find entries without parents first
-    const rootEntries  = [],
-          childEntries = [];
-
-    this.data.forEach(entry => {
-
-        // Shallow clone
-        entry = { ...entry };
-
-        // ensure folders have children array
-        if(entry.type === 'folder') entry.children = [];
-
-        // if it has a parent it must be a child
-        if(entry.parent) return childEntries.push(entry);
-
-        // otherwise, it is a root entry
-        rootEntries.push(entry);
-    });
-
-    const tree = [...rootEntries];
-
-    for(const entry of childEntries){
-
-        const parent = _findInTree(tree, entry.parent);
-
-        if(!parent) console.log('Parent not found for', entry.title);
-        parent.children.push(entry);
-    }
-
-    return tree;
-}
-
 Keyfile.prototype.findEntry = function keyfileFindEntry(title){
     return this.data.filter(entry => entry.title === title)[0];
+}
+
+Keyfile.prototype.findEntriesByTag = function findEntriesByTag(str){
+    if(this.encrypted) return [];
+
+    const entries = [];
+
+    this.data.forEach(entry => {
+        entry.tags.forEach(tag => {
+            if(tag === str) entries.push(entry);
+        });
+    });
+
+    return entries;
+}
+
+Keyfile.prototype.toTagArray = function toTagArray(){
+    const arr = [];
+
+    this.tags.forEach(tag => {
+        arr.push({
+            tag,
+            entries: this.findEntriesByTag(tag)
+        });
+    });
+
+    return arr;
 }
 
 Keyfile.prototype.setKey = async function setKey(pw, salt){
@@ -148,20 +151,6 @@ Keyfile.prototype.decrypt = async function decrypt(){
     else{
         throw new Error('Incorrect encryption key');
     }
-}
-
-function _findInTree(tree, title){
-    let found;
-
-    for(const entry of tree){
-        if(entry.title === title) return entry;
-
-        if(entry.type === 'folder') found = _findInTree(entry.children, title);
-
-        if(found) break;
-    }
-
-    return found
 }
 
 export default Keyfile;
