@@ -61,23 +61,9 @@ export default {
                 salt:     this.salt
             }
 
-            fetch('/register', {
-                method: 'POST',
-                mode: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(r => r.json())
-            .then(r => {
-                console.log(r);
+            this.$store.dispatch('register', data);
 
-                this.reset();
-            })
-            .catch(e => {
-                console.log(e);
-            });
+            this.reset();
         },
 
         reset(){

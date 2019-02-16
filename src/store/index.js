@@ -78,6 +78,16 @@ const store = new Vuex.Store({
                 }
             }
         },
+        async register(context, data){
+            try{
+                const r = await api.register(data);
+
+                return r;
+            }
+            catch(e){
+                console.error(e);
+            }
+        },
         keyfileSetKey(context, { pass, salt }){
             salt = typeof salt === 'string'
                 ? crypto.hex2ab(salt)
