@@ -28,16 +28,19 @@ export default {
         }
     },
     methods: {
-        submit(){
-            this.$api.login(this.username, this.password)
-                .then(r => {
-                    // Pass the submitted pass to $store for keyfile decryption
-                    r.password = this.password;
-                    this.$store.dispatch('login', r);
+        async submit(){
+            try{
+                const response = await this.$api.login(this.username, this.password);
 
-                    this.$router.push({ name: 'home' });
-                })
-                .catch(e => console.log(e));
+                response.password = this.password;
+
+                await this.$store.dispatch('login', response);
+
+                this.$router.push({ name: 'home' });
+            }
+            catch(e){
+                console.log(e);
+            }
         }
     }
 }
