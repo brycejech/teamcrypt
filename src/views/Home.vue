@@ -1,34 +1,11 @@
 <template lang="html">
-    <div class="row">
-        <div class="col-8 col-offset-2">
-            <div v-if="user.name" class="card">
-                <h3>Logged-in User</h3>
-                <table class="table table-striped">
-                    <tr>
-                        <th>Name</th>
-                        <td>{{ user.name }}</td>
-                    </tr>
-                    <tr>
-                        <th>Email</th>
-                        <td>{{ user.email }}</td>
-                    </tr>
-                    <tr>
-                        <th>Username</th>
-                        <td>{{ user.username }}</td>
-                    </tr>
-                    <tr>
-                        <th>ID</th>
-                        <td>{{ user.id }}</td>
-                    </tr>
-                    <tr>
-                        <th>UUID</th>
-                        <td>{{ user.uuid }}</td>
-                    </tr>
-                    <tr>
-                        <th>Registered</th>
-                        <td>{{ user.registered }}</td>
-                    </tr>
-                </table>
+    <div>
+        <user-view />
+        <keyfile-view />
+        <add-entry />
+        <div class="row">
+            <div class="col-12 my-0 py-0 mx-0 px-0">
+                <button @click="showModal" class="btn btn-primary float-left my-0">Add Entry</button>
             </div>
         </div>
     </div>
@@ -36,22 +13,31 @@
 
 <script>
 'use strict';
+import UserView    from '@/components/UserView';
+import KeyfileView from '@/components/KeyfileView';
+import AddEntry    from '@/components/AddEntry';
 
 export default {
+    name: 'HomePage',
     data() {
         return {
-            name: 'Bryce'
+
         }
     },
-    computed: {
-        user(){
-            return this.$store.state.user
+    methods: {
+        showModal(){
+            window.modal('#add-entry-modal');
         }
     },
     created(){
         if(!this.$store.state.user.name){
             this.$router.push({ name: 'login' });
         }
+    },
+    components: {
+        KeyfileView,
+        AddEntry,
+        UserView
     }
 }
 
