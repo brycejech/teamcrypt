@@ -2,9 +2,10 @@
 
 import * as crypto from '../lib/crypto';
 
-function Keyfile(key, file=[]){
+function Keyfile(key, file, salt){
     this.key       = key;
-    this.keyfile   = file;
+    this.data      = file || [];
+    this.salt      = salt;
     this.encrypted = typeof file === 'string'
 
     return this;
@@ -24,7 +25,7 @@ Keyfile.prototype.add = function keyfileAdd(obj){
         if(!parentEntry){
             parentEntry = { type:  'folder', title:  parent };
 
-            this.keyfile.push(parentEntry);
+            this.data.push(parentEntry);
         }
     }
 
@@ -38,11 +39,11 @@ Keyfile.prototype.add = function keyfileAdd(obj){
         notes
     }
 
-    if(this.keyfile === null || this.keyfile === undefined){
-        this.keyfile = [];
+    if(this.data === null || this.data === undefined){
+        this.data = [];
     }
 
-    this.keyfile.push(entry);
+    this.data.push(entry);
 
     return this;
 }
@@ -54,9 +55,9 @@ Keyfile.prototype.remove = function keyfileRemove(title){
 
     if(!entry) return this;
 
-    const idx = this.keyfile.indexOf(entry);
+    const idx = this.data.indexOf(entry);
 
-    this.keyfile.splice(idx, 1);
+    this.data.splice(idx, 1);
 
     return this;
 }
@@ -68,7 +69,7 @@ Keyfile.prototype.toTree = function keyfileToTree(){
     const rootEntries  = [],
           childEntries = [];
 
-    this.keyfile.forEach(entry => {
+    this.data.forEach(entry => {
 
         // Shallow clone
         entry = { ...entry };
@@ -97,12 +98,13 @@ Keyfile.prototype.toTree = function keyfileToTree(){
 }
 
 Keyfile.prototype.findEntry = function keyfileFindEntry(title){
-    return this.keyfile.filter(entry => entry.title === title)[0];
+    return this.data.filter(entry => entry.title === title)[0];
 }
 
 Keyfile.prototype.setKey = async function setKey(pw, salt){
     try{
-        this.key = await crypto.deriveKey(pw, salt);
+        this.salt = salt;
+        this.key  = await crypto.deriveKey(pw, salt);
     }
     catch(e){ throw e }
 
@@ -114,11 +116,11 @@ Keyfile.prototype.encrypt = async function encrypt(){
     if(!this.key) throw new Error('Must call setKey before encrypting');
 
     try{
-        const text = JSON.stringify(this.keyfile);
+        const text = JSON.stringify(this.data);
 
         const encrypted = await crypto.encrypt(this.key, text);
 
-        this.keyfile   = encrypted;
+        this.data   = encrypted;
         this.encrypted = true;
 
         return this;
@@ -130,13 +132,13 @@ Keyfile.prototype.decrypt = async function decrypt(){
     if(!this.encrypted) return this;
     if(!this.key) throw new Error('Must call setKey before decrypting');
 
-    const decrypted = await crypto.decrypt(this.key, this.keyfile);
+    const decrypted = await crypto.decrypt(this.key, this.data);
 
     if(decrypted){
         try{
             const keyfile = JSON.parse(decrypted);
 
-            this.keyfile   = keyfile;
+            this.data   = keyfile;
             this.encrypted = false;
 
             return this;
