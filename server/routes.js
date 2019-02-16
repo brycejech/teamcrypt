@@ -24,15 +24,22 @@ router.get('/user', async (req, res, next) => {
     }
 });
 
-router.post('/user/:username/keyfile', async (req, res, next) => {
+router.post('/user/keyfile', async (req, res, next) => {
 
     if(!req.session.user){
         return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const keyfile = req.body.keyfile;
+    const { id } = req.session.user, { data, salt } = req.body;
 
-    res.json({ keyfile });
+    try{
+        const newKeyfile = await User.updateKeyfile(id, data, salt);
+
+        return res.json(newKeyfile);
+    }
+    catch(e){
+        return res.status(500).json({ e: e.message });
+    }
 });
 
 router.get('/users', async (req, res, next) => {
