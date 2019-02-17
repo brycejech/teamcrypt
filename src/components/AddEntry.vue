@@ -1,8 +1,8 @@
 <template lang="html">
-    <div id="add-entry-modal" class="modal modal-lg">
+    <div id="add-entry-modal" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="add-entry vue">
+                <div class="add-entry">
                     <form @submit.prevent="formSubmit">
                         <h1 class="text-center mt-2 mb-0">Add Entry</h1>
 
@@ -64,11 +64,7 @@ export default {
             confirmPassword: '',
             url:             '',
             notes:           '',
-            passphrase:      '',
-            salt:            '',
-            output:          '',
-            tags:            [],
-            tree:            []
+            tags:            []
         }
     },
     methods: {
@@ -98,7 +94,7 @@ export default {
             this.tags            = [];
         },
         showTags(){
-            console.log(this.$store.getters.keyfileTags);
+            
         },
         addTag(){
             this.tags.push(this.tag);
