@@ -1,5 +1,6 @@
 'use strict';
 
+import uuid from 'uuid';
 import * as crypto from '../lib/crypto';
 
 function Keyfile(key, file, salt){
@@ -32,17 +33,15 @@ Keyfile.prototype.add = function keyfileAdd(obj){
     if(this.encrypted) throw new Error('Must decrypt before adding items');
     if(!obj.title)     throw new Error('Must provide a title')
 
-    let { title, type, tags, username, password, url, notes } = obj;
+    let { title, tags, username, password, url, notes } = obj;
 
     if(!tags) tags = [];
 
     if(typeof tags === 'string') tags = [ tags ];
 
-    type = type || 'entry';
-
     const entry = {
+        uuid: uuid(),
         title,
-        type,
         tags,
         username,
         password,
