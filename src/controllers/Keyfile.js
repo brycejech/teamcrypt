@@ -58,12 +58,15 @@ Keyfile.prototype.add = function keyfileAdd(obj){
     return this;
 }
 
-Keyfile.prototype.remove = function keyfileRemove(title){
+Keyfile.prototype.deleteEntry = function keyfileDelete(uuid){
     if(this.encrypted) throw new Error('Must decrypt before removing items');
 
-    const entry = this.findEntry(title);
+    const entry = this.findByUUID(uuid);
 
-    if(!entry) return this;
+    if(!entry){
+        console.log(`KEYFILE: Entry ${ uuid } not found`);
+        return this;
+    }
 
     const idx = this.data.indexOf(entry);
 
@@ -74,6 +77,10 @@ Keyfile.prototype.remove = function keyfileRemove(title){
 
 Keyfile.prototype.findEntry = function keyfileFindEntry(title){
     return this.data.filter(entry => entry.title === title)[0];
+}
+
+Keyfile.prototype.findByUUID = function findByUUID(id){
+    return this.data.filter(entry => entry.uuid === id)[0];
 }
 
 Keyfile.prototype.findEntriesByTag = function findEntriesByTag(str){
