@@ -106,10 +106,8 @@ const store = new Vuex.Store({
         keyfileDecrypt(){
             return keyfile.decrypt();
         },
-        async keyfileAddEntry(context, entry){
+        async keyfileUpdateRemote(context){
             try{
-                keyfile.add(entry);
-
                 await context.dispatch('keyfileEncrypt');
 
                 const salt = typeof keyfile.salt === 'string'
@@ -118,27 +116,49 @@ const store = new Vuex.Store({
 
                 const data = keyfile.data;
 
-                try{
-                    const newData = await api.updateKeyfile({ data, salt });
+                const newData = await api.updateKeyfile({ data, salt });
 
-                    keyfile.data = newData.keyfile;
+                keyfile.data = newData.keyfile;
 
-                    await context.dispatch('keyfileDecrypt');
+                await context.dispatch('keyfileDecrypt');
 
-                    context.commit('setEntries', keyfile.data);
-                }
-                catch(e){
-                    console.error(e);
-                }
-
-
+                context.commit('setEntries', keyfile.data);
             }
             catch(e){
-                throw e;
+                console.error(e);
             }
         },
-        keyfileGetMatchingTags(){
+        async keyfileAddEntry(context, entry){
+            try{
+                keyfile.add(entry);
 
+                await context.dispatch('keyfileUpdateRemote');
+            }
+            catch(e){
+                console.error(e);
+            }
+        },
+        async keyfileEditEntry(context, data){
+            const entry = keyfile.findByUUID(data.uuid);
+
+            entry.title    = data.title;
+            entry.tags     = Array.from(data.tags);
+            entry.username = data.username;
+            entry.password = data.password;
+            entry.url      = data.url;
+            entry.notes    = data.notes;
+
+            await context.dispatch('keyfileUpdateRemote');
+        },
+        async keyfileDeleteEntry(context, uuid){
+            try{
+                keyfile.deleteEntry(uuid);
+
+                await context.dispatch('keyfileUpdateRemote');
+            }
+            catch(e){
+                console.error(e);
+            }
         }
     }
 });
