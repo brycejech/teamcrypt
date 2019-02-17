@@ -8,6 +8,7 @@
                     <th>URL</th>
                     <th>Username</th>
                     <th>Tags</th>
+                    <th>Edit</th>
                 </tr>
             </thead>
             <tbody>
@@ -18,6 +19,9 @@
                     <td>
                         <span class="pill" v-for="tag in entry.tags">{{ tag }}</span>
                     </td>
+                    <td>
+                        <keyfile-edit :entry="entry" />
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -27,15 +31,28 @@
 <script>
 'use strict';
 
+import KeyfileEdit from '@/components/KeyfileEdit';
+
 export default {
     name: 'KeyfileView',
+    data(){
+        return {
+
+        }
+    },
     computed: {
         entries(){
             return this.$store.getters.keyfileEntries;
         }
     },
+    methods: {
+        
+    },
     created(){
 
+    },
+    components: {
+        KeyfileEdit
     }
 }
 </script>
@@ -44,10 +61,4 @@ export default {
     table
         tr:nth-child(even)
             background-color: rgba(black, .05)
-    .pill
-        display: inline-block
-        padding: 3px
-        margin-right: 3px
-        background: #3F3F3F
-        color: white
 </style>
