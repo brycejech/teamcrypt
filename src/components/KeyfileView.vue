@@ -8,6 +8,7 @@
                     <th>URL</th>
                     <th>Username</th>
                     <th>Tags</th>
+                    <th>UUID</th>
                     <th>Edit</th>
                 </tr>
             </thead>
@@ -19,6 +20,7 @@
                     <td>
                         <span class="pill" v-for="tag in entry.tags">{{ tag }}</span>
                     </td>
+                    <td>{{ entry.uuid }}</td>
                     <td>
                         <keyfile-edit :entry="entry" />
                     </td>
@@ -46,7 +48,7 @@ export default {
         }
     },
     methods: {
-        
+
     },
     created(){
 
