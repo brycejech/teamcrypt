@@ -22,5 +22,10 @@ export default {
 </script>
 
 <style lang="sass">
-    
+    .pill
+        display: inline-block
+        padding: 3px
+        margin-right: 3px
+        background: #3F3F3F
+        color: white
 </style>
