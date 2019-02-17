@@ -76,6 +76,12 @@ const store = new Vuex.Store({
                     alert('FAILED TO DECRYPT KEYFILE');
                 }
             }
+            else if(Array.isArray(keyfile.data)){
+                context.commit('setEntries', keyfile.data);
+            }
+            else{
+                context.commit('setEntries', []);
+            }
         },
         async register(context, data){
             try{
