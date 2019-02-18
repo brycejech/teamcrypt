@@ -63,10 +63,7 @@ Keyfile.prototype.deleteEntry = function keyfileDelete(uuid){
 
     const entry = this.findByUUID(uuid);
 
-    if(!entry){
-        console.log(`KEYFILE: Entry ${ uuid } not found`);
-        return this;
-    }
+    if(!entry) return this;
 
     const idx = this.data.indexOf(entry);
 
