@@ -14,7 +14,6 @@ let keyfile = window.keyfile = new Keyfile();
 
 const store = new Vuex.Store({
     state: {
-        keyfile: '',
         entries: [],
         user: {
             id:         '',
@@ -26,9 +25,6 @@ const store = new Vuex.Store({
         }
     },
     getters: {
-        keyfile(state){
-            return state.keyfile;
-        },
         kefileTags(state){
             return keyfile.tags ? keyfile.tags : [];
         },
